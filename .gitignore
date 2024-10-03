@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+backend/mongo-data/
 
 # testing
 /coverage
