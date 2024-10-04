@@ -1,10 +1,11 @@
 // frontend/src/components/UI/Input.jsx
 import React from 'react';
 
-const Input = ({ type = 'text', placeholder, value, onChange, className = '' }) => {
+const Input = ({ type = 'text', name, placeholder, value, onChange, className = '' }) => {
     return (
         <input
             type={type}
+            name={name} // Añadir esta línea
             placeholder={placeholder}
             value={value}
             onChange={onChange}

@@ -7,7 +7,7 @@ export const fetchTasks = createAsyncThunk(
     async (_, { getState, isRejectedWithValue }) =>{
         const { auth: { userInfo } } = getState();
         try {
-            const res = await axios.get('https://localhost/5000/api/tareas', {
+            const res = await axios.get('https://192.168.1.5:5000/api/tareas', {
                 headers: {
                     Authorization: 'Bearer ${userInfo.token}',
                 },
@@ -25,7 +25,7 @@ export const createTask = createAsyncThunk(
     async (taskData, { getState, isRejectedWithValue}) => {
         const { auth: { userInfo } } = getState();
         try {
-            const res = await axios.post('https//localhost:5000/api/tareas', taskData, {
+            const res = await axios.post('https//192.168.1.5:5000/api/tareas', taskData, {
                 headers: {
                     Authorization: 'Bearer ${userInfo.token}',
                 },
@@ -43,7 +43,7 @@ export const updateTask = createAsyncThunk(
     async ({ id, updateData }, { getState, isRejectedWithValue }) => {
         const { auth: { userInfo } } = getState();
         try {
-            const res = await axios.put('https//localhost:5000/api/tareas/${id}', updateData, {
+            const res = await axios.put('https//192.168.1.5:5000/api/tareas/${id}', updateData, {
                 headers: {
                     Authorization: 'Bearer ${userInfo.token}',
                 },
@@ -61,7 +61,7 @@ export const deleteTask = createAsyncThunk(
     async (id, { getState, isRejectedWithValue }) => {
         const { auth: { userInfo } } = getState();
         try {
-            await axios.delete('https://localhost:5000/api/tareas/${id}', {
+            await axios.delete('https://192.168.1.5:5000/api/tareas/${id}', {
                 headers: {
                     Authorization: 'Bearer ${userInfo.token}',
                 },
