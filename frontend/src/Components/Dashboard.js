@@ -5,21 +5,19 @@ const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [descripcion, setDescripcion] = useState("");
   const [categoria, setCategory] = useState("Personal");
-  const [editingTaskId, setEditingTaskId] = useState(null); // Para identificar la tarea en edición
-  const [newDescripcion, setNewDescripcion] = useState(""); // Nueva descripción de la tarea en edición
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [newDescripcion, setNewDescripcion] = useState("");
 
   // Obtener las tareas
   useEffect(() => {
     const getTasks = async () => {
       try {
         const response = await AuthService.requestWithAuth("get", "/tareas");
-        console.log("Tareas recibidas:", response.data); // Depuración: Verificar que las tareas tienen un _id
         setTasks(response.data);
       } catch (error) {
         console.error("Error al obtener las tareas:", error);
       }
     };
-
     getTasks();
   }, []);
 
@@ -40,23 +38,15 @@ const Dashboard = () => {
 
   // Habilitar modo edición para una tarea específica
   const handleEditClick = (task) => {
-    console.log("Tarea a editar:", task); // Depuración para verificar que la tarea contiene el _id
-    if (!task._id) {
-      console.error("La tarea seleccionada no tiene un _id definido");
-      return;
-    }
-    setEditingTaskId(task._id); // Usa _id en lugar de id
-    setNewDescripcion(task.descripcion); // Prellena con la descripción actual
+    setEditingTaskId(task._id);
+    setNewDescripcion(task.descripcion);
   };
 
   // Guardar los cambios de edición
   const handleSaveEdit = async (e) => {
     e.preventDefault();
-    console.log("Guardando cambios para la tarea con ID:", editingTaskId); // Verificar el _id de la tarea que se está guardando
-    if (!editingTaskId) {
-      console.error("ID de tarea no está definido");
-      return;
-    }
+    if (!editingTaskId) return;
+
     try {
       await AuthService.requestWithAuth("put", `/tareas/${editingTaskId}`, {
         descripcion: newDescripcion,
@@ -67,7 +57,7 @@ const Dashboard = () => {
           task._id === editingTaskId ? { ...task, descripcion: newDescripcion } : task
         )
       );
-      setEditingTaskId(null); // Salir del modo de edición después de guardar
+      setEditingTaskId(null);
     } catch (error) {
       console.error("Error al actualizar la tarea:", error);
     }
@@ -75,7 +65,33 @@ const Dashboard = () => {
 
   // Cancelar edición
   const handleCancelEdit = () => {
-    setEditingTaskId(null); // Salir del modo de edición sin guardar
+    setEditingTaskId(null);
+  };
+
+  // Eliminar tarea
+  const handleDeleteClick = async (id) => {
+    try {
+      await AuthService.requestWithAuth("delete", `/tareas/${id}`);
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
+    } catch (error) {
+      console.error("Error al eliminar la tarea:", error);
+    }
+  };
+
+  // Cambiar estado de completada
+  const handleCheckboxChange = async (task) => {
+    try {
+      const updatedTask = { ...task, completada: !task.completada };
+      await AuthService.requestWithAuth("put", `/tareas/${task._id}`, updatedTask);
+
+      setTasks((prevTasks) =>
+        prevTasks.map((t) =>
+          t._id === task._id ? { ...t, completada: !t.completada } : t
+        )
+      );
+    } catch (error) {
+      console.error("Error al actualizar el estado de completada:", error);
+    }
   };
 
   return (
@@ -122,40 +138,59 @@ const Dashboard = () => {
         <ul className="list-group">
           {tasks.map((task) => (
             <li
-              key={task._id} // Corregimos el key usando _id
+              key={task._id}
               className="list-group-item d-flex justify-content-between align-items-center"
+              style={{
+                textDecoration: task.completada ? "line-through" : "none",
+              }}
             >
-              {/* Muestra la descripción y el botón de editar */}
-              {editingTaskId === task._id ? (
-                <form onSubmit={handleSaveEdit}>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={newDescripcion}
-                    onChange={(e) => setNewDescripcion(e.target.value)}
-                  />
-                  <button type="submit" className="btn btn-success">
-                    Guardar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={handleCancelEdit}
-                  >
-                    Cancelar
-                  </button>
-                </form>
-              ) : (
-                <>
+              <div className="d-flex align-items-center">
+                {/* Checkbox para completar tareas */}
+                <input
+                  type="checkbox"
+                  checked={task.completada}
+                  onChange={() => handleCheckboxChange(task)}
+                  className="me-2"
+                />
+                {/* Descripción de la tarea */}
+                {editingTaskId === task._id ? (
+                  <form onSubmit={handleSaveEdit}>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={newDescripcion}
+                      onChange={(e) => setNewDescripcion(e.target.value)}
+                    />
+                    <button type="submit" className="btn btn-success">
+                      Guardar
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleCancelEdit}
+                    >
+                      Cancelar
+                    </button>
+                  </form>
+                ) : (
                   <span>{task.descripcion}</span>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleEditClick(task)}
-                  >
-                    Editar
-                  </button>
-                </>
-              )}
+                )}
+              </div>
+
+              <div>
+                <button
+                  className="btn btn-primary me-2"
+                  onClick={() => handleEditClick(task)}
+                >
+                  Editar
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDeleteClick(task._id)}
+                >
+                  Eliminar
+                </button>
+              </div>
             </li>
           ))}
         </ul>
