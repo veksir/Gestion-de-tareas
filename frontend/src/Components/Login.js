@@ -12,7 +12,7 @@ const Login = () => {
     try {
       await AuthService.login(username, password);
       /* alert("Inicio Exitoso") */
-      navigate('/dashboard'); // Cambia esto a la ruta de tu perfil o dashboard
+      navigate('/'); // Cambia esto a la ruta de tu perfil o dashboard
     } catch (error) {
       console.error('Login failed:', error);
     }

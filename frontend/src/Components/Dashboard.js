@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importamos useNavigate
 import AuthService from "../Utils/AuthService";
 
 const Dashboard = () => {
@@ -7,9 +8,17 @@ const Dashboard = () => {
   const [categoria, setCategory] = useState("Personal");
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [newDescripcion, setNewDescripcion] = useState("");
+  const navigate = useNavigate(); // Inicializamos useNavigate
 
   // Obtener las tareas
   useEffect(() => {
+    // Verificar si el usuario está autenticado
+    const currentUser = AuthService.getCurrentUser();
+    if (!currentUser) {
+      navigate("/login"); // Redirige al login si no está autenticado
+      return;
+    }
+
     const getTasks = async () => {
       try {
         const response = await AuthService.requestWithAuth("get", "/tareas");
@@ -19,7 +28,7 @@ const Dashboard = () => {
       }
     };
     getTasks();
-  }, []);
+  }, [navigate]);
 
   // Agregar tarea
   const handleAddTask = async (e) => {

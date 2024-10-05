@@ -1,30 +1,25 @@
 /* import logo from './logo.svg'; */
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Components/Login';
-import Dashboard from './Components/Dashboard'; // Asume que tienes un componente de perfil
-import AuthService from './Utils/AuthService';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "./Components/Dashboard";
+import Navbar from "./Components/Navbar";
+import Register from "./Components/Register";
+import Login from "./Components/Login"; // Crear la página de Login similar a Register
 
-const App = () => {
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    if (user) {
-      setCurrentUser(user);
-    }
-  }, []);
-
+function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={currentUser ? <Dashboard /> : <Login />} />
-      </Routes>
+      <Navbar />
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </div>
     </Router>
   );
-};
+}
 
 export default App;
