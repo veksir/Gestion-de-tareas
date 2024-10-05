@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../Utils/AuthService";
 
 const Navbar = () => {
-  const currentUser = AuthService.getCurrentUser();
   const navigate = useNavigate();
+  const currentUser = AuthService.getCurrentUser();
 
   const handleLogout = () => {
     AuthService.logout();
@@ -12,39 +12,32 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark ">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-          Dashboard
+          Task Manager
         </Link>
-        <div className="collapse navbar-collapse">
-          <ul className="navbar-nav ms-auto">
-            {!currentUser ? (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">
-                    Iniciar Sesión
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">
-                    Registrarse
-                  </Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <span className="nav-link">Hola, {currentUser.nombre}</span>
-                </li>
-                <li className="nav-item">
-                  <button className="btn btn-link nav-link" onClick={handleLogout}>
-                    Cerrar Sesión
-                  </button>
-                </li>
-              </>
-            )}
-          </ul>
+        {/* No utilizamos collapse para mantener los elementos visibles */}
+        <div className="navbar-nav ms-auto d-flex flex-row">
+          {currentUser ? (
+            <>
+              <span className="navbar-text me-3">
+                Bienvenido, {currentUser.nombre}
+              </span>
+              <button className="btn btn-outline-danger" onClick={handleLogout}>
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-outline-primary me-2">
+                Iniciar sesión
+              </Link>
+              <Link to="/register" className="btn btn-outline-success">
+                Registrarse
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

@@ -19,15 +19,17 @@ const Login = () => {
   };
 
   return (
-    <div className="container mt-5">
+    
+    <div className="container mb-3">
+      <br/>
       <form onSubmit={handleLogin}>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">Username</label>
-          <input type="text" className="form-control" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <div className="form-floating mb-3">
+          <input type="email" className="form-control" placeholder="" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label htmlFor="email" className="form-label" for="floatingInput">Correo</label>
         </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input type="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <div className="form-floating mb-3">
+          <input type="password" className="form-control" placeholder="Password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <label htmlFor="password" className="form-label">Contraseña</label>
         </div>
         <button type="submit" className="btn btn-primary">Login</button>
       </form>
