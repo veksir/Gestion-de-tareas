@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
+
 
 // Acción para registrar un usuario
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
     async (userData, { rejectWithValue }) => {
         try {
-            const res = await axios.post('http://192.168.1.5:5000/api/auth/register', userData);
+            const res = await axiosInstance.post('http://192.168.1.5:5000/api/auth/register', userData);
             localStorage.setItem('userInfo', JSON.stringify(res.data));  // Corregido JASON a JSON
             return res.data;
         } catch (error) {
@@ -20,7 +21,7 @@ export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async (Credential, { rejectWithValue }) => {
         try {
-            const res = await axios.post('http://192.168.1.5:5000/api/auth/login', Credential);
+            const res = await axiosInstance.post('http://192.168.1.5:5000/api/auth/login', Credential);
             localStorage.setItem('userInfo', JSON.stringify(res.data));  // Corregido JASON a JSON
             return res.data;
         } catch (error) {
