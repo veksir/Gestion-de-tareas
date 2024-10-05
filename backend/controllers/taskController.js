@@ -66,6 +66,10 @@ exports.eliminarTarea = async (req, res) => {
     const { id } = req.params;
 
     try {
+        // Verificar si llega el id de la tarea
+        console.log("ID de la tarea a eliminar:", id);
+
+        // Buscar la tarea por ID
         const tarea = await Task.findById(id);
 
         if (!tarea) {
@@ -73,13 +77,18 @@ exports.eliminarTarea = async (req, res) => {
         }
 
         // Verificar si el usuario es dueño de la tarea
+        console.log("ID del dueño de la tarea:", tarea.usuario.toString());
         if (tarea.usuario.toString() !== req.user.id) {
             return res.status(401).json({ mensaje: 'No autorizado' });
         }
 
-        await tarea.remove();
+        // Aquí puedes usar `remove()` si `tarea` es un documento
+        // Alternativamente, puedes usar `findByIdAndDelete`
+        await Task.findByIdAndDelete(id);
+
         res.json({ mensaje: 'Tarea eliminada' });
     } catch (error) {
+        console.error("Error al eliminar la tarea:", error);
         res.status(500).json({ mensaje: 'Error al eliminar la tarea', error: error.message });
     }
 };
